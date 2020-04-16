@@ -1,7 +1,7 @@
 import { createElement } from 'lwc';
 import { assert } from 'chai';
-// import sinon from 'sinon';
-import * as sinon from 'sinon/pkg/sinon-esm.js';
+import sinon from 'sinon';
+// import * as sinon from 'sinon/pkg/sinon-esm.js';
 import { HoverableElementLwc } from './HoverableElementLwc.js';
 import { aTimeout } from './helper.js';
 // import './hoverable-element-native.js';
