@@ -56,7 +56,7 @@ export const HoverableMixin = (base) =>
     constructor() {
       super();
       this._hoverCallbackBind = this._hoverCallback.bind(this);
-      this._hoverCallbackBind = this._leaveCallback.bind(this);
+      this._leaveCallbackBind = this._leaveCallback.bind(this);
     }
     /**
      * Registers hover listeners
@@ -65,9 +65,8 @@ export const HoverableMixin = (base) =>
       if (super.connectedCallback) {
         super.connectedCallback();
       }
-      console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
       this.addEventListener('mouseover', this._hoverCallbackBind);
-      this.addEventListener('mouseleave', this._hoverCallbackBind);
+      this.addEventListener('mouseleave', this._leaveCallbackBind);
     }
     /**
      * Removes hover listeners
@@ -77,13 +76,12 @@ export const HoverableMixin = (base) =>
         super.disconnectedCallback();
       }
       this.removeEventListener('mouseover', this._hoverCallbackBind);
-      this.removeEventListener('mouseleave', this._hoverCallbackBind);
+      this.removeEventListener('mouseleave', this._leaveCallbackBind);
     }
     /**
      * Set's the `hovered` attribute to true when handled.
      */
     _hoverCallback() {
-      console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
       this.hovered = true;
     }
     /**

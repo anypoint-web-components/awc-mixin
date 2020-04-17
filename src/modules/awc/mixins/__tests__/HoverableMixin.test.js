@@ -57,12 +57,10 @@ describe('HoverableMixin', () => {
         });
       });
 
-      describe.only('Entering hover state', () => {
+      describe('Entering hover state', () => {
         it('adds hover state when mouseover event detected', async () => {
           const element = await hoverableFixture();
-          element.dispatchEvent(new CustomEvent('mouseover', {
-            bubbles: true,
-          }));
+          element.dispatchEvent(new CustomEvent('mouseover'));
           assert.isTrue(element.hovered);
         });
 
