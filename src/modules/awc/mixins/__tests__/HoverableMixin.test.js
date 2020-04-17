@@ -1,7 +1,5 @@
 import { createElement } from 'lwc';
 import { assert } from 'chai';
-import sinon from 'sinon';
-// import * as sinon from 'sinon/pkg/sinon-esm.js';
 import { HoverableElementLwc } from './HoverableElementLwc.js';
 import { aTimeout } from './helper.js';
 // import './hoverable-element-native.js';
@@ -31,6 +29,8 @@ describe('HoverableMixin', () => {
         const element = createElement('hoverable-element-lwc', {
             is: HoverableElementLwc
         });
+        const input = document.createElement('input');
+        element.appendChild(input);
         document.body.appendChild(element);
         await aTimeout();
         return element;
@@ -42,43 +42,31 @@ describe('HoverableMixin', () => {
           assert.isFalse(element.hovered);
         });
 
-        it('_hovered if false by default', async () => {
+        it('hovered if false by default', async () => {
           const element = await hoverableFixture();
-          assert.isFalse(element._hovered);
+          assert.isFalse(element.hovered);
         });
 
-        it('Calls requestUpdate() on LitElement', async () => {
+        it('Dispatches hoveredchange event', async () => {
           const element = await hoverableFixture();
-          const spy = sinon.spy(element, 'requestUpdate');
-          element._hovered = true;
-          assert.isTrue(spy.called);
-        });
-
-        it('Ignores _hoverable setter when no change', async () => {
-          const element = await hoverableFixture();
-          element._hovered = true;
-          const spy = sinon.spy(element, 'requestUpdate');
-          element._hovered = true;
-          assert.isFalse(spy.called);
-        });
-
-        it('Dispatches hovered-changed event', async () => {
-          const element = await hoverableFixture();
-          const spy = sinon.spy();
-          element.addEventListener('hovered-changed', spy);
-          element._hovered = true;
-          assert.isTrue(spy.args[0][0].detail.value);
+          // const spy = jest.spyOn(element, 'requestUpdate');
+          const spy = jest.fn();
+          element.addEventListener('hoveredchange', spy);
+          element.hovered = true;
+          assert.isTrue(spy.mock.calls[0][0].detail.value);
         });
       });
 
-      describe('Entering hover state', () => {
-        it('Adds hover state when mouseover event detected - LitElement', async () => {
+      describe.only('Entering hover state', () => {
+        it('adds hover state when mouseover event detected', async () => {
           const element = await hoverableFixture();
-          element.dispatchEvent(new CustomEvent('mouseover'));
+          element.dispatchEvent(new CustomEvent('mouseover', {
+            bubbles: true,
+          }));
           assert.isTrue(element.hovered);
         });
 
-        it('Adds hovered attribute', async () => {
+        it('adds hovered attribute', async () => {
           const element = await hoverableFixture();
           element.dispatchEvent(new CustomEvent('mouseover'));
           assert.isTrue(element.hasAttribute('hovered'));
@@ -86,27 +74,27 @@ describe('HoverableMixin', () => {
       });
 
       describe('Leaving hover state', () => {
-        it('Removes hover state when mouseleave event detected - LitElement', async () => {
+        it('removes hover state when mouseleave event detected - LitElement', async () => {
           const element = await hoverableFixture();
-          element._hovered = true;
+          element.hovered = true;
           element.dispatchEvent(new CustomEvent('mouseleave'));
           assert.isFalse(element.hovered);
         });
 
-        it('Adds hovered attribute', async () => {
+        it('adds hovered attribute', async () => {
           const element = await hoverableFixture();
-          element._hovered = true;
+          element.hovered = true;
           element.dispatchEvent(new CustomEvent('mouseleave'));
           assert.isFalse(element.hasAttribute('hovered'));
         });
 
-        it('Handles light DOM mouseleave', async () => {
+        it('handles light DOM mouseleave', async () => {
           const element = await hoverableChildFixture();
-          element._hovered = true;
+          element.hovered = true;
           const input = element.querySelector('input');
           input.dispatchEvent(new CustomEvent('mouseleave', {
             // mouseover event bubbles per spec
-            bubbles: true
+            bubbles: true,
           }));
           assert.isFalse(element.hovered);
         });
@@ -123,7 +111,7 @@ describe('HoverableMixin', () => {
     //
     //   it('tests.', async () => {
     //       const element = await basicFixture();
-    //
+    //       console.log();
     //       assert.ok(element);
     //   });
     // });

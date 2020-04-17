@@ -1,3 +1,4 @@
+import { api } from 'lwc';
 /**
 @license
 Copyright 2017 Mulesoft.
@@ -25,20 +26,17 @@ export const HoverableMixin = (base) =>
     /**
      * @return {Boolean} True when the element is currently hovered by a pointing device.
      */
+    @api
     get hovered() {
-      return this._hovered;
+      return this._hovered || false;
     }
 
-    get _hovered() {
-      return this.__hovered || false;
-    }
-
-    set _hovered(value) {
-      const old = this.__hovered;
+    set hovered(value) {
+      const old = this._hovered;
       if (value === old) {
         return;
       }
-      this.__hovered = value;
+      this._hovered = value;
       if (value) {
         this.setAttribute('hovered', '');
       } else {
@@ -67,6 +65,7 @@ export const HoverableMixin = (base) =>
       if (super.connectedCallback) {
         super.connectedCallback();
       }
+      console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
       this.addEventListener('mouseover', this._hoverCallbackBind);
       this.addEventListener('mouseleave', this._hoverCallbackBind);
     }
@@ -84,12 +83,13 @@ export const HoverableMixin = (base) =>
      * Set's the `hovered` attribute to true when handled.
      */
     _hoverCallback() {
-      this._hovered = true;
+      console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+      this.hovered = true;
     }
     /**
      * Updates `hovered` if the control is not hovered anymore.
      */
     _leaveCallback() {
-      this._hovered = false;
+      this.hovered = false;
     }
   };
